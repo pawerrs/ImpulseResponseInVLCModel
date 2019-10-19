@@ -15,8 +15,8 @@ def calculate(N,m):
     for x in range(-90,91):
         AS1.append(x)
 
-    for degrees in AS1:
-        Rs.append(math.pow(((m+1)/(2*math.pi))*math.cos(math.radians(degrees)),m))
+    for as1 in AS1:
+        Rs.append(math.pow(((m+1)/(2*math.pi)*math.cos(math.radians(as1))),m))
        
     for rs in Rs:
         p.append(rs/sum(Rs))

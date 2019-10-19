@@ -19,7 +19,7 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
     ref=[0.8, 0.8, 0.8, 0.8, 0.3, 0.8]
     
     if(a==1):
-        r = abs(math.atan(math.radians(AS))*math.sqrt(np.dot(n,n)))
+        r = abs(math.tan(math.radians(AS))*math.sqrt(np.dot(n,n)))
         xe = xs + math.cos(math.radians(fi))*r
         ye = ys + math.sin(math.radians(fi))*r
         ze = zs + math.sqrt(np.dot(n,n))*n[2]
@@ -35,21 +35,21 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
     elif v1[0]>x2:
         A.append(x2)
     else:
-        A.append(x1+x2)
+        A.append(0.5*(x1+x2))
 
     if v1[1]<y1:
         A.append(y1)
     elif v1[1]>y2:
-         A.append(y2)
+        A.append(y2)
     else:
-        A.append(y1+y2)
+        A.append(0.5*(y1+y2))
 
     if v1[2]<z1:
        A.append(z1)
     elif v1[2]>z2:
        A.append(z2)
     else:
-       A.append(z1+z2)
+       A.append(0.5*(z1+z2))
 
 
     dv=0.1*v
@@ -110,13 +110,12 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
 
     # FOV
     vi=[xs-Rt[0], ys-Rt[1], zs-Rt[2]]
-    ai = math.acos(math.radians(vi[2]/math.sqrt(np.dot(vi,vi))))
+    ai = math.degrees(np.arccos(vi[2]/math.sqrt(np.dot(vi,vi))))
     Tx[a-1]=(D+DR)/(3*math.pow(10,8))
 
-
+    # print(str(a))
     if R[0]>=Rtx[0] and R[0]<=Rtx[1] and R[1]>=Rtx[2] and R[1]<=Rtx[3] and R[2]==Rtx[4]:
-        # display(strcat('A ray obtained receiver: ',' ',num2str(a)))
-        # print('A ray obtained receiver: ' + str(a))
+        print('A ray obtained receiver: ' + str(a))
         stop_flag=1
     else:
         stop_flag=0
@@ -156,6 +155,15 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
         Px=0
 
     a=a+1
+
+    # print('Px: ' + str(Px)) 
+    # print(' Dx:' + str(Dx))
+    # print(' tx: ' + str(tx))
+    # print(' Ax: '  + str(Ax))
+    # print(' Tx: ' + str(Tx))
+    
+
+
 
     if a<=b and stop_flag==0:
         Px,Dx,tx,Ax,Tx=receive(P,Dx,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,Ax,Tx)

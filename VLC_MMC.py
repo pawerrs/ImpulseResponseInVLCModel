@@ -3,15 +3,19 @@ import lambertian
 import numpy as np
 import logging
 import receiver
-#import sort_map_mb
+import sort_map_mb
+import matplotlib.pyplot as plt
 
 sk = 2
 c = 3*math.pow(10,8)
 gof = 0
 
 a = 1
+
+# number of reflectances
 b = 31
 
+# number of generated rays
 N = math.pow(10,4)
 
 # room coordinates
@@ -56,29 +60,27 @@ AS = lambertian.calculate(N,1)
 FI = 360 * np.random.uniform(0,1,int(N))
 P = 1/N
 
-h = np.zeros([int(N),3],dtype = int)
-Ax =  np.zeros([b,1],dtype = int)
-Tx =  np.zeros([b,1],dtype = int)
-Ax1 = np.zeros([b,int(N)],dtype = int)
-Tx1 = np.zeros([b,int(N)],dtype = int)
+h = np.zeros([int(N),3],dtype = np.float)
+Ax =  np.zeros([b,1],dtype = np.float)
+Tx =  np.zeros([b,1],dtype = np.float)
+Ax1 = np.zeros([b,int(N)],dtype = np.float)
+Tx1 = np.zeros([b,int(N)],dtype = np.float)
 
-for i in range(0, int(N-1)):
-    if (i%(int(N)/100))==0:
-        print("wykonano: ")
-    h[i,0],h[i,1],h[i,2],Ax1[:,i],Tx1[:,i] = receiver.receive(P,0,m,xs,ys,zs,AS[i],FI[i],v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,6,a,b,gof,0,Ax,Tx)
+for i in range(0, int(N)):
+    Pxprim,Dxprim,txprim,Axprim,Txprim = receiver.receive(P,0,m,xs,ys,zs,AS[i],FI[i],v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,6,a,b,gof,0,Ax,Tx)
+    h[i,0] = Pxprim
+    h[i,1] = Dxprim
+    h[i,2] = txprim
+    for x in range(0, b):
+        Ax1[x,i] = Axprim[x]
+        Tx1[x,i] = Txprim[x]
+
+Ax1=np.asarray(Ax1)*Ar
+r1,r2=sort_map_mb.sort(Ax1,Tx1,0.5,60)
 
 
-Ax1=np.asarray(Ax1)*Ar;
-r=sort_map_mb.sort(Ax1,Tx1,0.5,60);
-
-# figure(3)
-# plot(r(:,1),r(:,2)*10^6)
-
-
-# clc
-# display('channel statistical parameters')
-# u=sum((r(:,2)).^2.*r(:,1))/sum(r(:,2).^2)
-# Drms=sqrt(sum((r(:,1)-u).^2.*r(:,2).^2)/sum(r(:,2).^2))
-# Ho=sum((r(:,2)).^2.*r(:,1))
-# g=find(r(:,2)>0,1,'first');
-# t0=r(g,1)
+l = [math.pow(10,6)*x for x in r2]
+plt.plot(r1, l)
+plt.xlabel('Impulse response')
+plt.ylabel('Position ')
+plt.show()
