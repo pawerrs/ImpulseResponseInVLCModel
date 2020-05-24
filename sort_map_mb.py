@@ -1,5 +1,4 @@
 from operator import itemgetter
-import finder
 import numpy as np
 import math
 
@@ -34,5 +33,4 @@ def sort(Ax1,Tx1,ds,t_max):
         if np.isfinite(c[k]) and c[k]>0:
             tp[iix]=tp[iix]+c[k]
 
-    
     return np.asarray(t).transpose(), tp

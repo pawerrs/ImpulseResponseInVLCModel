@@ -26,7 +26,7 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
         v1=[xe-xs, ye-ys, ze-zs]
         v=np.asarray(v1)/math.sqrt(np.dot(v1,v1))
 
-    # we looking for a point on surface and presumed reflection wall
+    # looking for a point on surface and presumed reflection wall
     v1=100*v
     A = []
 
@@ -113,9 +113,7 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
     ai = math.degrees(np.arccos(vi[2]/math.sqrt(np.dot(vi,vi))))
     Tx[a-1]=(D+DR)/(3*math.pow(10,8))
 
-    # print(str(a))
     if R[0]>=Rtx[0] and R[0]<=Rtx[1] and R[1]>=Rtx[2] and R[1]<=Rtx[3] and R[2]==Rtx[4]:
-        print('A ray obtained receiver: ' + str(a))
         stop_flag=1
     else:
         stop_flag=0
@@ -129,10 +127,8 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
     else:
         Ax[a-1]=0
 
-
     if stop_flag==0:
         P=P*ref[sc-1]
-
 
     # now point of light source
     xs=R[0]
@@ -140,7 +136,6 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
     zs=R[2]
 
     # new unit reflection vector
-
     v=v-(2*np.dot(v,ni)*np.asarray(ni))
 
     if np.isfinite(P):
@@ -155,15 +150,6 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
         Px=0
 
     a=a+1
-
-    # print('Px: ' + str(Px)) 
-    # print(' Dx:' + str(Dx))
-    # print(' tx: ' + str(tx))
-    # print(' Ax: '  + str(Ax))
-    # print(' Tx: ' + str(Tx))
-    
-
-
 
     if a<=b and stop_flag==0:
         Px,Dx,tx,Ax,Tx=receive(P,Dx,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,Ax,Tx)
