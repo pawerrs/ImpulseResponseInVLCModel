@@ -138,7 +138,7 @@ def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,A
     # new unit reflection vector
     v=v-(2*np.dot(v,ni)*np.asarray(ni))
 
-    if np.isfinite(P):
+    if np.isfinite(P) and Dx != 0:
         Px=P/(math.pow(Dx,2))
     else:
         Px=0
