@@ -3,6 +3,7 @@ import numpy as np
 
 def receive(P,D,m,xs,ys,zs,AS,fi,v,x1,x2,y1,y2,z1,z2,Rt,Rtx,FOV,sc,a,b,gof,src,Ax,Tx):
 
+    #unit wectors perpendicular to walls & reflectance
     if(sc == 1):
         n = [1,0,0]
     elif(sc == 2):
