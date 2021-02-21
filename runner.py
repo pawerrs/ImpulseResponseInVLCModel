@@ -1,14 +1,16 @@
 import modified_monte_carlo_algorithm
 import random_generator
-import results_saver
+import output_handler
 import random
 import sys
 import json
+import time
 
 max_room_size = 4
 parameters = []
 draw_chart = True
 number_of_input_values = 1
+
 for i in range(number_of_input_values):
     single_simulation_parameters = random_generator.generate_random_input_values(max_room_size)
     single_channel_impulse_response = modified_monte_carlo_algorithm.compute(single_simulation_parameters, draw_chart)
@@ -16,4 +18,4 @@ for i in range(number_of_input_values):
     print(i) 
 
 file_name = "deep_neural_network_input.xlsx"
-results_saver.save(file_name, parameters) 
+output_handler.save(file_name, parameters) 

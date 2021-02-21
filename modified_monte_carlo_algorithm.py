@@ -80,8 +80,8 @@ def compute(parameters, draw_chart):
     if draw_chart:
         l = [math.pow(10,6)*x for x in r2]
         plt.plot(time, l)
-        plt.xlabel('Impulse response')
-        plt.ylabel('Position ')
+        plt.xlabel('Time [ns]')
+        plt.ylabel('Channel impulse response [x10^6 1/s]')
         plt.show()
 
     return power

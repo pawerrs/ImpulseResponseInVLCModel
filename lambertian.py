@@ -36,7 +36,7 @@ def calculate(N,m):
     # unique values from an array with their indices
     rdf, indices = np.unique(rdf, return_index=True) 
 
-    #onlu unique values
+    #only unique values
     for indice in indices:
         AS1prim.append(AS1[indice])
 
