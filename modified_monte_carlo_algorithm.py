@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 
 def compute(parameters, draw_chart):
 
+    time_length = 60
+    time_between_samples = 0.5
+
     #room parameters
     room_x1 = parameters[0]
     room_x2 = parameters[1]
@@ -21,42 +24,39 @@ def compute(parameters, draw_chart):
     transmitter_zs = parameters[8]
 
     #reflectances
-    number_of_reflectances = parameters[9]
+    number_of_reflectances = parameters[12]
 
     gof = 0
     a = 1
+    sc = 6
 
     # number of generated tracing rays
     N = 10000
 
     rx = 0.01
     Ar = math.pow(rx,2)
-    Rt = [-1, -1, 0]
+    receiver_xyz = [parameters[9], parameters[10], parameters[11]]
 
     #receiver position
-    Rtx=[Rt[0] - rx, Rt[0] + rx, Rt[1] - rx, Rt[1] + rx, Rt[2], Rt[2] + rx]
-
-    # LED SemiAngle
-    SemiAngle = 60
+    receiver_position=[receiver_xyz[0] - rx, receiver_xyz[0] + rx, receiver_xyz[1] - rx, receiver_xyz[1] + rx, receiver_xyz[2], receiver_xyz[2] + rx]
 
     # Field Of View of detector
-    FOV = 85
+    field_of_view = 85
 
     v = [0, 0, 0]
 
-    m = -math.log(2)/(math.log(math.cos(math.radians(SemiAngle))))
+    initial_distance = 0
 
     #generalized Lambertian radiant intensity model
-    AS = lambertian.calculate(N,1)
+    lambertian_angles_of_rays = lambertian.calculate(N,1)
 
     # N-samples uniformly distributed between (1, 360)
-    FI = 360 * np.random.uniform(0,1,int(N))
+    random_angle = 360 * np.random.uniform(0,1,int(N))
 
-    #reciprocal of the number of beams
+    #reciprocal of the number of beams, power ber beam
     P = 1/N
 
     #generating arrays filled witz zeros, second parameter is number of array dimensions
-    h = np.zeros([int(N),3],dtype = np.float)
     Ax =  np.zeros([number_of_reflectances,1],dtype = np.float)
     Tx =  np.zeros([number_of_reflectances,1],dtype = np.float)
     Ax1 = np.zeros([number_of_reflectances,int(N)],dtype = np.float)
@@ -64,24 +64,32 @@ def compute(parameters, draw_chart):
 
     #loop through every ray
     for i in range(0, int(N)):
-        Pxprim,Dxprim,txprim,Axprim,Txprim = receiver.receive(P,0,m,transmitter_xs,transmitter_ys,transmitter_zs,AS[i],FI[i],v,room_x1,room_x2,room_y1,room_y2,room_z1,room_z2,Rt,Rtx,FOV,6,a,number_of_reflectances,gof,0,Ax,Tx)
-        h[i,0] = Pxprim
-        h[i,1] = Dxprim
-        h[i,2] = txprim
+        Pxprim,distance_traveled_by_ray,txprim,Axprim,Txprim = receiver.receive(P,initial_distance,transmitter_xs,transmitter_ys,transmitter_zs,lambertian_angles_of_rays[i],random_angle[i],v,room_x1,room_x2,room_y1,room_y2,room_z1,room_z2,receiver_xyz,receiver_position,field_of_view,sc,a,number_of_reflectances,gof,0,Ax,Tx)
         for x in range(0, number_of_reflectances):
             Ax1[x,i] = Axprim[x]
             Tx1[x,i] = Txprim[x]
 
     Ax1=np.asarray(Ax1)*Ar
-    time,r2=sort_map_mb.sort(Ax1,Tx1,0.5,60)
+    time,r2=sort_map_mb.sort(Ax1,Tx1,time_between_samples,time_length)
 
+    r2[-1] = r2[-2]
     power = np.concatenate([math.pow(10,6)*x for x in r2]).ravel().tolist()
 
     if draw_chart:
         l = [math.pow(10,6)*x for x in r2]
+        fig, ax = plt.subplots()
         plt.plot(time, l)
-        plt.xlabel('Time [ns]')
-        plt.ylabel('Channel impulse response [x10^6 1/s]')
+        plt.xlabel('Czas [ns]')
+        plt.ylabel('Odpowiedź impulsowa [x10^-6 1/s]')
+
+        textstr = '\n'.join((
+            r'$Pomieszczenie= %.1f x %.1f x %.1f$' % (room_x2 - room_x1, room_y2 - room_y1, room_z2 - room_z1,  ),
+            r'$Nadajnik=[%.1f, %.1f, %.1f]$' % (transmitter_xs, transmitter_ys, transmitter_zs,  ),
+            r'$Odbiornik=[%.1f, %.1f, %.1f]$' % (receiver_xyz[0], receiver_xyz[1], receiver_xyz[2], )))
+
+        props = dict(boxstyle='round', facecolor='white', alpha=0.5)
+        ax.text(0.55, 0.9, textstr, transform=ax.transAxes, fontsize=10,
+        verticalalignment='top', bbox=props)
         plt.show()
 
     return power
