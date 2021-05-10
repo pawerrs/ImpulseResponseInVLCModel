@@ -8,11 +8,11 @@ import time
 
 max_room_size = 4
 parameters = []
-draw_chart = True
-number_of_input_values_per_serie = 1
-number_of_series = 1
+draw_chart = False
+number_of_input_values_per_serie = 1000
+number_of_series = 5
 
-file_name = "neural_network_input3000.xlsx"
+file_name = "neural_network_input_20odbic.xlsx"
 
 for k in range(number_of_series):
     for i in range(number_of_input_values_per_serie):

@@ -87,8 +87,10 @@ def compute(parameters, draw_chart):
             r'$Nadajnik=[%.1f, %.1f, %.1f]$' % (transmitter_xs, transmitter_ys, transmitter_zs,  ),
             r'$Odbiornik=[%.1f, %.1f, %.1f]$' % (receiver_xyz[0], receiver_xyz[1], receiver_xyz[2], )))
 
+        # textstr = r'Liczba odbić= %.1f' % (number_of_reflectances, )
+
         props = dict(boxstyle='round', facecolor='white', alpha=0.5)
-        ax.text(0.55, 0.9, textstr, transform=ax.transAxes, fontsize=10,
+        ax.text(0.7, 0.9, textstr, transform=ax.transAxes, fontsize=10,
         verticalalignment='top', bbox=props)
         plt.show()
 

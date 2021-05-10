@@ -130,7 +130,7 @@ def receive(P,initial_distance, transmitter_xs,transmitter_ys,transmitter_zs,lam
 
     if abs(ai)<field_of_view:
         if number_of_reflection==1:
-            Ax[number_of_reflection-1]=(P/(math.pi*math.pow(initial_distance+distance_to_receiver,2)))*math.cos(math.radians(ai))
+            Ax[number_of_reflection-1]=(P/(math.pow(math.pi,2)*math.pow(initial_distance+distance_to_receiver,2)))*math.cos(math.radians(ai))
         else:
             Ax[number_of_reflection-1]=(P/(math.pow(initial_distance+distance_to_receiver,2)))*math.cos(math.radians(ai))
     else:
